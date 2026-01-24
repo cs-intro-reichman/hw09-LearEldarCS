@@ -90,26 +90,23 @@ public class List {
      *  true. Otherwise, returns false. */
     public boolean remove(char chr) {
         // Your code goes here
-        Node current = this.first;
-        int size = this.size;
-
-        if (current == null) return false;
-
-        if (current.cp.equals(chr)) {
-            current = current.next;
+        while (first != null && first.cp.equals(chr)) {
+            first = first.next;
             size--;
             return true;
         }
 
-            while (current.next != null) {
-                if (current.next.cp.equals(chr)) {
-                    current.next = current.next.next;
-                    size--;
-                    return true;
-                }
+        Node current = first;
+        while (current != null && current.next != null) {
+            if (current.next.cp.equals(chr)) {
+                current.next = current.next.next;
+                size--;
+                return true;
+            } else {
                 current = current.next;
             }
-
+        }
+        
         return false;
     }
 
