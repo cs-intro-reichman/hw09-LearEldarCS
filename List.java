@@ -40,15 +40,21 @@ public class List {
     /** GIVE Textual representation of this list. */
     public String toString() {
         // Your code goes here
-        Node current = this.first;
+        if (first == null) return "()";
+
         String str = "(";
-            while (current != null) {
-                str += current;
-                current = current.next;
+        Node current = first;
+
+        while (current != null) {
+            str += current.toString();
+            if (current.next != null) {
+                str += " ";
             }
+            current = current.next;
+        }
 
-            str = str.substring(0, str.length() - 1) + ")";
-
+        str += ")";
+        
         return str;
     }
 
@@ -106,7 +112,7 @@ public class List {
                 current = current.next;
             }
         }
-        
+
         return false;
     }
 
