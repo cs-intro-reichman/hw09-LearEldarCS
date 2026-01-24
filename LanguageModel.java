@@ -40,7 +40,24 @@ public class LanguageModel {
 	// characters in the given list. */
 	void calculateProbabilities(List probs) {				
 		// Your code goes here
-	}
+        int size = probs.getSize();
+
+        if (size == 0) return;
+
+        int totalChars = 0;
+        for (int i = 0; i < size; i++) {
+            CharData cd = probs.get(i);
+            totalChars += cd.count;
+        }
+
+        double cumulative = 0.0;
+        for(int j = 0; j < size; j++) {
+            CharData cd = probs.get(j);
+            cd.p = (double) cd.count / totalChars;
+            cumulative += cd.p;
+            cd.cp = cumulative;
+        }
+    }
 
     // Returns a random character from the given probabilities list.
 	char getRandomChar(List probs) {
