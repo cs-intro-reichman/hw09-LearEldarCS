@@ -97,14 +97,14 @@ public class List {
 
         if (current.cp.equals(chr)) {
             current = current.next;
-            this.size = size--;
+            size--;
             return true;
         }
 
             while (current.next != null) {
                 if (current.next.cp.equals(chr)) {
                     current.next = current.next.next;
-                    this.size = size--;
+                    size--;
                     return true;
                 }
                 current = current.next;
