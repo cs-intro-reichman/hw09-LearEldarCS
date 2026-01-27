@@ -118,22 +118,22 @@ public class LanguageModel {
         }
 
         String generated = initialText;
+        String window = initialText.substring(initialText.length() - windowLength, initialText.length());
 
         while (generated.length() < textLength) {
-            String window = generated.substring(generated.length() - windowLength);
             List charList = CharDataMap.get(window);
 
-            char nextChar;
-
-            if (charList == null || charList.getSize() == 0) {
-                nextChar = window.charAt(windowLength - 1);
-            } else {
-                nextChar = getRandomChar(charList);
+            if (charList == null) {
+                break;
             }
 
+            char nextChar = getRandomChar(charList);
+
             generated += nextChar;
+
+            window = generated.substring(generated.length() - windowLength, generated.length());
         }
-        
+
         return generated;
 	}
 
