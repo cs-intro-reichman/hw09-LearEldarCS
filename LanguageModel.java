@@ -39,10 +39,11 @@ public class LanguageModel {
 
         In in = new In(fileName);
 
-        for (int i = 0; i < this.windowLength && !in.isEmpty(); i++) {
+        for(int i = 0; i < windowLength; i++ ) {
+            if (in.isEmpty()) return;
             window += in.readChar();
         }
-
+        
         while (!in.isEmpty()) {
             
             c = in.readChar();
@@ -50,6 +51,7 @@ public class LanguageModel {
             List probs = CharDataMap.get(window);
 
             if (probs == null) {
+                probs = new List();
                 CharDataMap.put(window, probs);
             }
 
@@ -59,7 +61,7 @@ public class LanguageModel {
 
         }
 
-        for(List probs: CharDataMap.values()) {
+        for (List probs: CharDataMap.values()) {
             calculateProbabilities(probs);
         }
 
