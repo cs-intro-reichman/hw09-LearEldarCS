@@ -123,13 +123,17 @@ public class LanguageModel {
             String window = generated.substring(generated.length() - windowLength);
             List charList = CharDataMap.get(window);
 
-            if (charList == null) {
-                break;
+            char nextChar;
+
+            if (charList == null || charList.getSize() == 0) {
+                nextChar = window.charAt(windowLength - 1);
+            } else {
+                nextChar = getRandomChar(charList);
             }
 
-            generated += getRandomChar(charList);
+            generated += nextChar;
         }
-
+        
         return generated;
 	}
 
