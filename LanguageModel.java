@@ -36,17 +36,14 @@ public class LanguageModel {
 		// Your code goes here
         String window = "";
         char c;
-
         In in = new In(fileName);
 
-        for(int i = 0; i < windowLength; i++ ) {
+        for (int i = 0; i < windowLength && !in.isEmpty(); i++) {
             window += in.readChar();
         }
-        
-        while (!in.isEmpty()) {
-            
-            c = in.readChar();
 
+        while (!in.isEmpty()) {
+            c = in.readChar();
             List probs = CharDataMap.get(window);
 
             if (probs == null) {
@@ -55,15 +52,12 @@ public class LanguageModel {
             }
 
             probs.update(c);
-
             window = window.substring(1) + c;
-
         }
 
         for (List probs: CharDataMap.values()) {
             calculateProbabilities(probs);
         }
-
 	}
 
     // Computes and sets the probabilities (p and cp fields) of all the
@@ -71,18 +65,19 @@ public class LanguageModel {
 	void calculateProbabilities(List probs) {				
 		// Your code goes here
         int size = probs.getSize();
-
         if (size == 0) return;
 
         int totalChars = 0;
-        for (int i = 0; i < size; i++) {
-            CharData cd = probs.get(i);
-            totalChars += cd.count;
+
+        ListIterator it = probs.listIterator(0);
+        while (it.hasNext()) {
+            totalChars += it.next().count;
         }
 
         double cumulative = 0.0;
-        for(int j = 0; j < size; j++) {
-            CharData cd = probs.get(j);
+        it = probs.listIterator(0);
+        while (it.hasNext()) {
+            CharData cd = it.next();
             cd.p = (double) cd.count / totalChars;
             cumulative += cd.p;
             cd.cp = cumulative;
@@ -93,14 +88,16 @@ public class LanguageModel {
 	char getRandomChar(List probs) {
 		// Your code goes here
         double r = randomGenerator.nextDouble();
+        ListIterator it = probs.listIterator(0);
 
-        for (int i = 0; i < probs.getSize(); i ++) {
-            CharData cd = probs.get(i);
-            if (r < cd.cp) {
+        while (it.hasNext()) {
+            CharData cd = it.next();
+
+            if (cd.cp > r) {
                 return cd.chr;
             }
         }
-		return probs.get(probs.getSize() - 1).chr;
+        return probs.get(probs.getSize() -1).chr;
 	}
 
     /**
@@ -119,9 +116,7 @@ public class LanguageModel {
         String generated = initialText;
 
         while (generated.length() < textLength) {
-            
             String window = generated.substring(generated.length() - windowLength);
-
             List charList = CharDataMap.get(window);
 
             if (charList == null) {
@@ -129,10 +124,8 @@ public class LanguageModel {
             }
 
             char nextChar = getRandomChar(charList);
-            generated +=nextChar;
-            
+            generated = generated + nextChar;
         }
-
         return generated;
 	}
 
@@ -155,11 +148,11 @@ public class LanguageModel {
 
         LanguageModel lm;
         
-        if (randomGeneration) {
+        if (randomGeneration) 
             lm = new LanguageModel(windowLength);
-        } else {
+        else 
             lm = new LanguageModel(windowLength, 20);
-        }
+        
 
         lm.train(filename);
 
