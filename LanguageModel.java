@@ -68,7 +68,6 @@ public class LanguageModel {
         if (size == 0) return;
 
         int totalChars = 0;
-
         ListIterator it = probs.listIterator(0);
         while (it.hasNext()) {
             totalChars += it.next().count;
@@ -89,15 +88,15 @@ public class LanguageModel {
 		// Your code goes here
         double r = randomGenerator.nextDouble();
         ListIterator it = probs.listIterator(0);
+        CharData last = null;
 
         while (it.hasNext()) {
-            CharData cd = it.next();
-
-            if (cd.cp > r) {
-                return cd.chr;
+            last = it.next();
+            if (last.cp > r) {
+                return last.chr;
             }
         }
-        return probs.get(probs.getSize() - 1).chr;
+        return last.chr;
 	}
 
     /**
@@ -109,27 +108,21 @@ public class LanguageModel {
 	 */
 	public String generate(String initialText, int textLength) {
 		// Your code goes here
-        if (initialText.length() >= textLength) {
+        if (initialText.length() < windowLength) {
             return initialText;
         }
 
         String generated = initialText;
 
-        while (generated.length() < textLength) {
-            String window = "";
+        int targetTotalLength = initialText.length() + textLength;
 
-            if (generated.length() >= windowLength) {
-                window = generated.substring(generated.length() - windowLength);
-            } else {
-                return generated;
-            }
-
+        while (generated.length() < targetTotalLength) {
+            String window = generated.substring(generated.length() - windowLength);
             List charList = CharDataMap.get(window);
 
             if (charList == null) {
                 return generated;
             }
-
             char nextChar = getRandomChar(charList);
             generated = generated + nextChar;
         }
