@@ -97,7 +97,7 @@ public class LanguageModel {
                 return cd.chr;
             }
         }
-        return probs.get(probs.getSize() -1).chr;
+        return probs.get(probs.getSize() - 1).chr;
 	}
 
     /**
@@ -109,14 +109,21 @@ public class LanguageModel {
 	 */
 	public String generate(String initialText, int textLength) {
 		// Your code goes here
-        if (initialText.length() < windowLength) {
+        if (initialText.length() >= textLength) {
             return initialText;
         }
 
         String generated = initialText;
 
         while (generated.length() < textLength) {
-            String window = generated.substring(generated.length() - windowLength);
+            String window = "";
+
+            if (generated.length() >= windowLength) {
+                window = generated.substring(generated.length() - windowLength);
+            } else {
+                return generated;
+            }
+
             List charList = CharDataMap.get(window);
 
             if (charList == null) {
